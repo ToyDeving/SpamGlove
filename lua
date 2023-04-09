@@ -1,9 +1,11 @@
+-- SCRIPT MADE BY RUY
+
 --// Instances
 
 local glovegUI = Instance.new("ScreenGui")
 glovegUI.DisplayOrder = 9999999
 glovegUI.IgnoreGuiInset = false
-glovegUI.ResetOnSpawn = true
+glovegUI.ResetOnSpawn = false
 glovegUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 glovegUI.Name = "GloveGUI"
 glovegUI.Parent = game.Players.LocalPlayer.PlayerGui
@@ -103,6 +105,8 @@ whitelist.TextColor3 = Color3.new(0, 0, 0)
 whitelist.TextScaled = true
 whitelist.TextSize = 14
 whitelist.TextWrapped = true
+whitelist.TextXAlignment = Enum.TextXAlignment.Left
+whitelist.ClearTextOnFocus = false
 whitelist.BackgroundColor3 = Color3.new(1, 1, 1)
 whitelist.Position = UDim2.new(0.100000001, 0, 0.485000014, 0)
 whitelist.Size = UDim2.new(0.170940176, 0, 0.0427350439, 0)
@@ -133,6 +137,23 @@ text_label_2.Size = UDim2.new(1, 0, 0.540000021, 0)
 text_label_2.Visible = true
 text_label_2.Parent = whitelist
 
+local suggest = Instance.new("TextLabel")
+suggest.Font = Enum.Font.GothamBold
+suggest.Text = ""
+suggest.TextColor3 = Color3.new(0.690196, 0.690196, 0.690196)
+suggest.TextScaled = true
+suggest.TextSize = 14
+suggest.TextWrapped = true
+suggest.TextXAlignment = Enum.TextXAlignment.Left
+suggest.AnchorPoint = Vector2.new(0.5, 0.5)
+suggest.BackgroundColor3 = Color3.new(1, 1, 1)
+suggest.BackgroundTransparency = 1
+suggest.Position = UDim2.new(0.5, 0, 0.5, 0)
+suggest.Size = UDim2.new(1, 0, 1, 0)
+suggest.Visible = true
+suggest.Name = "Suggest"
+suggest.Parent = whitelist
+
 local blacklist = Instance.new("TextBox")
 blacklist.Font = Enum.Font.GothamBold
 blacklist.PlaceholderColor3 = Color3.new(0.709804, 0.709804, 0.709804)
@@ -140,8 +161,10 @@ blacklist.PlaceholderText = "PlayerName"
 blacklist.Text = ""
 blacklist.TextColor3 = Color3.new(0, 0, 0)
 blacklist.TextScaled = true
+blacklist.TextXAlignment = Enum.TextXAlignment.Left
 blacklist.TextSize = 14
 blacklist.TextWrapped = true
+blacklist.ClearTextOnFocus = false
 blacklist.BackgroundColor3 = Color3.new(1, 1, 1)
 blacklist.Position = UDim2.new(0.100000001, 0, 0.583760679, 0)
 blacklist.Size = UDim2.new(0.170940176, 0, 0.0427350439, 0)
@@ -173,6 +196,23 @@ text_label_3.Position = UDim2.new(0, 0, -0.660000026, 0)
 text_label_3.Size = UDim2.new(1, 0, 0.540000021, 0)
 text_label_3.Visible = true
 text_label_3.Parent = blacklist
+
+local suggest_2 = Instance.new("TextLabel")
+suggest_2.Font = Enum.Font.GothamBold
+suggest_2.Text = ""
+suggest_2.TextColor3 = Color3.new(0.690196, 0.690196, 0.690196)
+suggest_2.TextScaled = true
+suggest_2.TextSize = 14
+suggest_2.TextWrapped = true
+suggest_2.TextXAlignment = Enum.TextXAlignment.Left
+suggest_2.AnchorPoint = Vector2.new(0.5, 0.5)
+suggest_2.BackgroundColor3 = Color3.new(1, 1, 1)
+suggest_2.BackgroundTransparency = 1
+suggest_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+suggest_2.Size = UDim2.new(1, 0, 1, 0)
+suggest_2.Visible = true
+suggest_2.Name = "Suggest"
+suggest_2.Parent = blacklist
 
 local click = Instance.new("TextButton")
 click.Font = Enum.Font.SourceSans
@@ -226,13 +266,141 @@ local uicorner_6 = Instance.new("UICorner")
 uicorner_6.CornerRadius = UDim.new(0.10000000149011612, 1)
 uicorner_6.Parent = delete
 
-local load = Instance.new("LocalScript")
-load.Name = "LOAD"
-load.Parent = click
+--// Scripts
+
+task.spawn(function()
+	local l__TextBox__1 = whitelist;
+	local CurrentPlayer = ""
+	local CurrentText = ""
+	local ThisTable
+	ThisTable = {}
+	local TextTo = l__TextBox__1.Text:split(",")			
+	for _, v in pairs(TextTo) do
+		table.insert(ThisTable, v)
+	end		
+	function upd()
+		local v1 = "";	
+		CurrentText = string.format(table.concat(ThisTable, ","))
+		if l__TextBox__1 ~= nil then
+			if 0 < #l__TextBox__1.Text then	
+				local newStr = string.gsub(l__TextBox__1.Text, string.format(table.concat(ThisTable, ",")..","), "")
+				local v2, v3 = string.find(newStr, newStr);
+				local v4 = false;
+				local v5, v6, v7 = pairs(game.Players:GetPlayers());
+				while true do
+					local v8, v9 = v5(v6, v7);
+					if v8 then
+
+					else
+						break;
+					end;
+					v7 = v8;
+					if v4 == false then					
+						if v9.Name ~= game.Players.LocalPlayer.Name then
+							if string.sub(string.lower(newStr), v2, v3) == string.sub(string.lower(v9.Name), v2, v3) and not table.find(ThisTable, v9.Name) then
+								v4 = true;
+								v1 = v9.Name
+								CurrentPlayer = v9.Name
+							end;
+						end;
+					end;			
+				end;
+			end;
+		end;
+		if v1 ~= "" then
+			if CurrentText == "" then
+				suggest.Text = v1;
+			else
+				suggest.Text = CurrentText..","..v1;
+			end	
+		else
+			suggest.Text = ""
+		end
+	end;
+	upd();
+	l__TextBox__1:GetPropertyChangedSignal("Text"):Connect(upd);
+	l__TextBox__1.FocusLost:Connect(function(p1)
+		if p1 == true then
+			ThisTable = {}
+			if suggest.Text ~= "" then
+				l__TextBox__1.Text = suggest.Text;
+			end
+			CurrentPlayer = ""
+			local TextTo = l__TextBox__1.Text:split(",")			
+			for _, v in pairs(TextTo) do
+				table.insert(ThisTable, v)
+			end	
+		end;
+	end);
+
+	local l__TextBox__1 = blacklist;
+	local CurrentPlayer = ""
+	local CurrentText = ""
+	local ThisTable
+	ThisTable = {}
+	local TextTo = l__TextBox__1.Text:split(",")			
+	for _, v in pairs(TextTo) do
+		table.insert(ThisTable, v)
+	end		
+	function upd()
+		local v1 = "";	
+		CurrentText = string.format(table.concat(ThisTable, ","))
+		if l__TextBox__1 ~= nil then
+			if 0 < #l__TextBox__1.Text then	
+				local newStr = string.gsub(l__TextBox__1.Text, string.format(table.concat(ThisTable, ",")..","), "")
+				local v2, v3 = string.find(newStr, newStr);
+				local v4 = false;
+				local v5, v6, v7 = pairs(game.Players:GetPlayers());
+				while true do
+					local v8, v9 = v5(v6, v7);
+					if v8 then
+
+					else
+						break;
+					end;
+					v7 = v8;
+					if v4 == false then					
+						if v9.Name ~= game.Players.LocalPlayer.Name then
+							if string.sub(string.lower(newStr), v2, v3) == string.sub(string.lower(v9.Name), v2, v3) and not table.find(ThisTable, v9.Name) then
+								v4 = true;
+								v1 = v9.Name
+								CurrentPlayer = v9.Name
+							end;
+						end;
+					end;			
+				end;
+			end;
+		end;
+		if v1 ~= "" then
+			if CurrentText == "" then
+				suggest_2.Text = v1;
+			else
+				suggest_2.Text = CurrentText..","..v1;
+			end	
+		else
+			suggest_2.Text = ""
+		end
+	end;
+	upd();
+	l__TextBox__1:GetPropertyChangedSignal("Text"):Connect(upd);
+	l__TextBox__1.FocusLost:Connect(function(p1)
+		if p1 == true then
+			ThisTable = {}
+			if suggest_2.Text ~= "" and l__TextBox__1.Text ~= "all" then
+				l__TextBox__1.Text = suggest_2.Text;
+			end
+			CurrentPlayer = ""
+			local TextTo = l__TextBox__1.Text:split(",")			
+			for _, v in pairs(TextTo) do
+				table.insert(ThisTable, v)
+			end	
+		end;
+	end);
+end)
+
 
 -- LOAD
 task.spawn(function()
-	local script = load
 
 	local UIS = game:GetService("UserInputService")
 	local Player = game.Players.LocalPlayer
@@ -258,9 +426,11 @@ task.spawn(function()
 			repeat task.wait(.15) until Handle == true or Spamming == false
 			if Re == false then
 				Re = true
+				task.wait(.1)
 				game.ReplicatedStorage.HDAdminClient.Signals.RequestCommand:InvokeServer("/re")
 			else
 				Re = false
+				task.wait(.1)
 				Character:WaitForChild("Humanoid").Health = 0
 			end
 			Character:WaitForChild("HumanoidRootPart").CFrame = StartPosition
@@ -297,10 +467,13 @@ task.spawn(function()
 			Spamming = false
 			Handle = false
 			Re = false
+			Character = Player.Character
+			Glove = Player.Backpack:WaitForChild("Extreme Glove")
 		else
 			click.Text = "STOP"
 			click.BackgroundColor3 = Color3.fromRGB(95, 26, 28)
-			if SpawnConnection then SpawnConnection:Disconnect() SpawnConnection = nil end
+			Character = Player.Character
+			Glove = Player.Backpack:WaitForChild("Extreme Glove")		
 			StartPosition = Character:WaitForChild("HumanoidRootPart").CFrame
 			Spamming = true
 			SpamGlove()
@@ -333,7 +506,7 @@ task.spawn(function()
 			end)
 		end
 	end)	
-	
+
 	DeleteConnection = delete.MouseButton1Click:Connect(function()
 		if SpawnConnection then SpawnConnection:Disconnect() SpawnConnection = nil end
 		if InputConnection then InputConnection:Disconnect() InputConnection = nil end
