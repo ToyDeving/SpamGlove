@@ -427,7 +427,7 @@ task.spawn(function()
 			if Re == false then
 				Re = true
 				task.wait(.1)
-				game.ReplicatedStorage.HDAdminClient.Signals.RequestCommand:InvokeServer("/re")
+				game.ReplicatedStorage.HDAdminClient.Signals.RequestCommand:InvokeServer(";re")
 			else
 				Re = false
 				task.wait(.1)
